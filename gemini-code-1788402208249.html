@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리 가족 홈페이지</title>
+    <style>
+        :root {
+            --primary-color: #6b46c1;
+            --primary-light: #9f7aea;
+            --primary-dark: #4c1d95;
+            --bg-color: #f3e8ff;
+            --card-bg: #ffffff;
+            --text-color: #3b0764;
+            --sub-text: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* 저장 툴바 */
+        .admin-bar {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 0.6rem 1rem;
+            text-align: right;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 101;
+        }
+
+        .admin-notice {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            background-color: white;
+            color: var(--primary-dark);
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--bg-color);
+        }
+
+        /* 헤더 */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .edit-icon-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .edit-icon-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .card-edit-btn {
+            background: var(--bg-color);
+            color: var(--primary-dark);
+            font-size: 0.75rem;
+            padding: 2px 5px;
+            margin-left: 4px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* 메인 대문 */
+        .hero {
+            text-align: center;
+            padding: 3.5rem 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+
+        .hero h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2.5rem 1rem;
+        }
+
+        section {
+            margin-bottom: 3.5rem;
+            scroll-margin-top: 5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            color: var(--primary-dark);
+        }
+
+        /* 가족 카드 */
+        .family-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .member-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(107, 70, 193, 0.08);
+            border: 1px solid rgba(159, 122, 234, 0.2);
+            position: relative;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 1rem;
+            cursor: pointer;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: var(--bg-color);
+            border: 3px solid var(--primary-light);
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(76, 29, 149, 0.6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .avatar-container:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .name-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 0.25rem;
+        }
+
+        .member-card h3 {
+            color: var(--primary-dark);
+        }
+
+        .role {
+            font-size: 0.85rem;
+            color: var(--primary-light);
+            font-weight: bold;
+            margin-bottom: 0.75rem;
+        }
+
+        .description {
+            font-size: 0.9rem;
+            color: var(--sub-text);
+            outline: none;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* 텍스트 편집시 테두리 표시 */
+        [contenteditable="true"]:focus {
+            outline: 2px dashed var(--primary-light);
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* 소식 게시판 */
+        .board-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(107, 70, 193, 0.08);
+        }
+
+        .board-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #f3e8ff;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .board-item:last-child {
+            border-bottom: none;
+        }
+
+        .board-img-container {
+            width: 70px;
+            height: 70px;
+            flex-shrink: 0;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .board-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            object-fit: cover;
+            background-color: var(--bg-color);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--primary-dark);
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 상단 저장 바 -->
+    <div class="admin-bar">
+        <span class="admin-notice">💡 ✏️ 버튼을 눌러 제목/이름을 변경하고, 사진을 클릭해 사진을 바꿔보세요!</span>
+        <button class="btn" onclick="saveData()">💾 변경사항 저장하기</button>
+    </div>
+
+    <!-- 숨겨진 파일 선택 태그 -->
+    <input type="file" id="imageInput" accept="image/*" onchange="handleImageUpload(event)">
+
+    <!-- 헤더 -->
+    <header>
+        <div class="title-wrapper">
+            <h1 id="site-title">💜 우리 가족 홈</h1>
+            <button class="edit-icon-btn" onclick="editSiteTitle()">✏️ 제목 변경</button>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#about">가족 소개</a></li>
+                <li><a href="#news">가족 소식</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 메인 대문 -->
+    <div class="hero">
+        <div class="title-wrapper" style="justify-content: center; margin-bottom: 0.5rem;">
+            <h2 id="hero-title">행복함이 가득한 우리 집</h2>
+            <button class="edit-icon-btn" onclick="editHeroTitle()">✏️ 수정</button>
+        </div>
+        <p contenteditable="true" title="클릭해서 수정 가능">서로 사랑하고 배려하는 보라빛 일상 이야기</p>
+    </div>
+
+    <div class="container">
+        <!-- 가족 소개 섹션 -->
+        <section id="about">
+            <div class="section-header">
+                <h2 class="section-title">가족 구성원</h2>
+                <button class="btn" onclick="addMember()">+ 가족 추가</button>
+            </div>
+            <div class="family-grid" id="family-grid">
+                <!-- 아빠 카드 -->
+                <div class="member-card">
+                    <button class="delete-btn" onclick="deleteCard(this)">×</button>
+                    <div class="avatar-container" onclick="triggerImageUpload(this)">
+                        <img src="https://via.placeholder.com/110/6b46c1/ffffff?text=사진클릭" class="avatar-img" alt="사진">
+                        <div class="avatar-overlay">📷 사진 변경</div>
+                    </div>
+                    <div class="name-wrapper">
+                        <h3 class="member-name">홍길동</h3>
+                        <button class="edit-icon-btn card-edit-btn" onclick="editName(this)">✏️ 이름</button>
+                    </div>
+                    <p class="role" contenteditable="true">든든한 가장</p>
+                    <p class="description" contenteditable="true">취미는 주말 등산과 요리하기. 언제나 가족을 최우선으로 생각합니다.</p>
+                </div>
+
+                <!-- 엄마 카드 -->
+                <div class="member-card">
+                    <button class="delete-btn" onclick="deleteCard(this)">×</button>
+                    <div class="avatar-container" onclick="triggerImageUpload(this)">
+                        <img src="https://via.placeholder.com/110/9f7aea/ffffff?text=사진클릭" class="avatar-img" alt="사진">
+                        <div class="avatar-overlay">📷 사진 변경</div>
+                    </div>
+                    <div class="name-wrapper">
+                        <h3 class="member-name">김영희</h3>
+                        <button class="edit-icon-btn card-edit-btn" onclick="editName(this)">✏️ 이름</button>
+                    </div>
+                    <p class="role" contenteditable="true">분위기 메이커</p>
+                    <p class="description" contenteditable="true">식물 키우기와 정원 가꾸기를 좋아합니다. 집안을 늘 밝게 만들어 줍니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 가족 소식 섹션 -->
+        <section id="news">
+            <div class="section-header">
+                <h2 class="section-title">최근 가족 소식</h2>
+                <button class="btn" onclick="addNews()">+ 소식 추가</button>
+            </div>
+            <div class="board-card" id="news-board">
+                <div class="board-item">
+                    <div class="board-img-container" onclick="triggerImageUpload(this)">
+                        <img src="https://via.placeholder.com/70/6b46c1/ffffff?text=사진" class="board-img" alt="소식 사진">
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <span class="board-date" contenteditable="true">2026.08.15</span>
+                        <p contenteditable="true"><strong>제주도 여름 가족 여행</strong> — 오랜만에 온 가족이 함께 다녀온 행복한 여행 기록!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>© 2026 우리 가족 홈페이지. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let currentTargetImg = null;
+
+        // 홈페이지 메인 상단 제목 변경
+        function editSiteTitle() {
+            const currentTitle = document.getElementById('site-title').innerText;
+            const newTitle = prompt('새로운 홈페이지 제목을 입력하세요:', currentTitle);
+            if (newTitle && newTitle.trim() !== '') {
+                document.getElementById('site-title').innerText = newTitle.trim();
+            }
+        }
+
+        // 메인 대문 문구 변경
+        function editHeroTitle() {
+            const currentTitle = document.getElementById('hero-title').innerText;
+            const newTitle = prompt('새로운 대문 제목을 입력하세요:', currentTitle);
+            if (newTitle && newTitle.trim() !== '') {
+                document.getElementById('hero-title').innerText = newTitle.trim();
+            }
+        }
+
+        // 가족 이름 변경
+        function editName(btn) {
+            const nameElem = btn.previousElementSibling;
+            const newName = prompt('가족 이름을 입력하세요:', nameElem.innerText);
+            if (newName && newName.trim() !== '') {
+                nameElem.innerText = newName.trim();
+            }
+        }
+
+        // 사진 파일 선택 창 열기
+        function triggerImageUpload(container) {
+            currentTargetImg = container.querySelector('img');
+            document.getElementById('imageInput').click();
+        }
+
+        // 선택한 이미지를 파일에서 읽어서 화면에 적용
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file && currentTargetImg) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentTargetImg.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // 내용 저장하기 (웹브라우저 저장소)
+        function saveData() {
+            const content = document.body.innerHTML;
+            localStorage.setItem('familySiteDataV3', content);
+            alert('홈페이지 제목, 가족 이름, 사진 등이 성공적으로 저장되었습니다!');
+        }
+
+        // 저장된 데이터 불러오기
+        window.onload = function() {
+            const savedData = localStorage.getItem('familySiteDataV3');
+            if (savedData) {
+                document.body.innerHTML = savedData;
+            }
+        };
+
+        // 가족 추가
+        function addMember() {
+            const grid = document.getElementById('family-grid');
+            const newCard = document.createElement('div');
+            newCard.className = 'member-card';
+            newCard.innerHTML = `
+                <button class="delete-btn" onclick="deleteCard(this)">×</button>
+                <div class="avatar-container" onclick="triggerImageUpload(this)">
+                    <img src="https://via.placeholder.com/110/6b46c1/ffffff?text=사진클릭" class="avatar-img" alt="사진">
+                    <div class="avatar-overlay">📷 사진 변경</div>
+                </div>
+                <div class="name-wrapper">
+                    <h3 class="member-name">새 가족</h3>
+                    <button class="edit-icon-btn card-edit-btn" onclick="editName(this)">✏️ 이름</button>
+                </div>
+                <p class="role" contenteditable="true">역할/수식어</p>
+                <p class="description" contenteditable="true">소개글을 클릭하여 수정하세요.</p>
+            `;
+            grid.appendChild(newCard);
+        }
+
+        // 소식 추가
+        function addNews() {
+            const board = document.getElementById('news-board');
+            const newItem = document.createElement('div');
+            newItem.className = 'board-item';
+            newItem.innerHTML = `
+                <div class="board-img-container" onclick="triggerImageUpload(this)">
+                    <img src="https://via.placeholder.com/70/6b46c1/ffffff?text=사진" class="board-img" alt="소식 사진">
+                </div>
+                <div style="flex-grow: 1;">
+                    <span class="board-date" contenteditable="true">2026.00.00</span>
+                    <p contenteditable="true"><strong>새 소식 제목</strong> — 내용을 입력하세요.</p>
+                </div>
+            `;
+            board.appendChild(newItem);
+        }
+
+        // 카드 삭제
+        function deleteCard(btn) {
+            if (confirm('이 항목을 삭제하시겠습니까?')) {
+                btn.parentElement.remove();
+            }
+        }
+    </script>
+</body>
+</html>
